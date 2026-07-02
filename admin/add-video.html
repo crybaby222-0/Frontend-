@@ -1,0 +1,28 @@
+<!doctype html><html lang="pt-br"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Adicionar Video</title><link rel="stylesheet" href="admin.css"></head><body>
+<div class="nav-admin"><strong>Joe · Admin</strong><div class="links">
+<a href="dashboard.html">Dashboard</a><a href="#" onclick="logout()">Sair</a></div></div>
+<div class="container">
+<h1>Adicionar Music Video</h1>
+<form id="f" enctype="multipart/form-data">
+  <label>Título<input name="title" required></label>
+  <label>Playlist<input name="playlist" placeholder="Ex: Ao Vivo"></label>
+  <label>Miniatura<input name="thumb" type="file" accept="image/*"></label>
+  <label>Arquivo de video (opcional)<input name="video_file" type="file" accept="video/*"></label>
+  <label>OU link do YouTube<input name="youtube_url" type="url" placeholder="https://youtu.be/..."></label>
+  <label>Prévia (hover) - video curto sem som<input name="preview" type="file" accept="video/*"></label>
+  <button class="primary" type="submit">Adicionar video</button>
+</form>
+</div>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script>
+requireLogin();
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const r = await apiForm('/api/videos', e.target);
+  if (r && r.id) { msg('Video adicionado ✓'); e.target.reset(); }
+  else msg('Erro ao adicionar', true);
+};
+</script></body></html>

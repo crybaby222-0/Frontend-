@@ -1,0 +1,43 @@
+<!doctype html><html lang="pt-br"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Dashboard</title><link rel="stylesheet" href="admin.css"></head><body>
+<div class="nav-admin"><strong>Joe · Admin</strong>
+<div class="links">
+  <a href="dashboard.html">Dashboard</a>
+  <a href="add-album.html">+ Álbum</a>
+  <a href="add-song.html">+ Música</a>
+  <a href="add-video.html">+ Video</a>
+  <a href="/" target="_blank">Ver site</a>
+  <a href="#" onclick="logout()">Sair</a>
+</div></div>
+<div class="container">
+  <h1>Dashboard</h1>
+  <h2>Álbuns</h2><div class="list" id="albums"></div>
+  <h2>Músicas</h2><div class="list" id="songs"></div>
+  <h2>Videos</h2><div class="list" id="videos"></div>
+</div>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script>
+requireLogin();
+async function load() {
+  const albums = await api('/api/albums');
+  document.getElementById('albums').innerHTML = albums.map(a=>`
+    <div class="item"><div><strong>${a.title}</strong> ${a.featured?'⭐':''} <small>${a.year||''}</small></div>
+    <button class="del" onclick="delItem('albums',${a.id})">Excluir</button></div>`).join('') || '<div>Nenhum álbum.</div>';
+  const songs = await api('/api/songs');
+  document.getElementById('songs').innerHTML = songs.map(s=>`
+    <div class="item"><div><strong>${s.title}</strong> <small>${s.album_title||'Single'}</small></div>
+    <button class="del" onclick="delItem('songs',${s.id})">Excluir</button></div>`).join('') || '<div>Nenhuma música.</div>';
+  const videos = await api('/api/videos');
+  document.getElementById('videos').innerHTML = videos.map(v=>`
+    <div class="item"><div><strong>${v.title}</strong> <small>${v.playlist||''}</small></div>
+    <button class="del" onclick="delItem('videos',${v.id})">Excluir</button></div>`).join('') || '<div>Nenhum video.</div>';
+}
+async function delItem(kind, id) {
+  if (!confirm('Excluir?')) return;
+  await api('/api/'+kind+'/'+id, { method:'DELETE' });
+  load();
+}
+load();
+</script></body></html>

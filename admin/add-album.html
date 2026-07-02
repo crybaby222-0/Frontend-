@@ -1,0 +1,31 @@
+<!doctype html><html lang="pt-br"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Adicionar Álbum</title><link rel="stylesheet" href="admin.css"></head><body>
+<div class="nav-admin"><strong>Joe · Admin</strong><div class="links">
+<a href="dashboard.html">Dashboard</a><a href="#" onclick="logout()">Sair</a></div></div>
+<div class="container">
+<h1>Adicionar Álbum</h1>
+<form id="f" enctype="multipart/form-data">
+  <label>Título<input name="title" required></label>
+  <div class="row">
+    <label>Ano<input name="year" placeholder="2025"></label>
+    <label>Capa<input name="cover" type="file" accept="image/*"></label>
+  </div>
+  <label><input type="checkbox" name="featured" value="1"> Álbum em destaque na home</label>
+  <label>Link Spotify<input name="spotify" type="url"></label>
+  <label>Link YouTube<input name="youtube" type="url"></label>
+  <label>Link Apple Music<input name="apple" type="url"></label>
+  <button class="primary" type="submit">Criar álbum</button>
+</form>
+</div>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script>
+requireLogin();
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const r = await apiForm('/api/albums', e.target);
+  if (r && r.id) { msg('Álbum criado ✓'); e.target.reset(); }
+  else msg('Erro ao criar', true);
+};
+</script></body></html>

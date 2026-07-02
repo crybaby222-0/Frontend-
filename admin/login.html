@@ -1,0 +1,26 @@
+<!doctype html><html lang="pt-br"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Login</title><link rel="stylesheet" href="admin.css"></head><body>
+<div class="login-wrap"><div class="login-box">
+  <h1>Admin</h1>
+  <form id="f">
+    <label>Usuário<input name="username" required></label>
+    <label>Senha<input name="password" type="password" required></label>
+    <button class="primary" type="submit">Entrar</button>
+    <div id="err" style="color:#000;margin-top:.5rem"></div>
+  </form>
+</div></div>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script>
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const r = await fetch(API_BASE + '/api/auth/login', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ username: fd.get('username'), password: fd.get('password') })
+  }).then(r=>r.json());
+  if (r.token) { setToken(r.token); location.href='dashboard.html'; }
+  else document.getElementById('err').textContent = 'Credenciais inválidas';
+};
+</script></body></html>

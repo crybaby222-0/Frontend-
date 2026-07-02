@@ -1,0 +1,45 @@
+<!doctype html><html lang="pt-br"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Adicionar Música</title><link rel="stylesheet" href="admin.css"></head><body>
+<div class="nav-admin"><strong>Joe · Admin</strong><div class="links">
+<a href="dashboard.html">Dashboard</a><a href="#" onclick="logout()">Sair</a></div></div>
+<div class="container">
+<h1>Adicionar Música</h1>
+<form id="f" enctype="multipart/form-data">
+  <label>Título<input name="title" required></label>
+  <div class="row">
+    <label>Álbum
+      <select name="album_id"><option value="">— (Single) —</option></select>
+    </label>
+    <label>Ordem da faixa<input name="track_order" type="number" value="0"></label>
+  </div>
+  <label><input type="checkbox" name="is_single" value="1"> É single (sem álbum)</label>
+  <div class="row">
+    <label>Capa<input name="cover" type="file" accept="image/*"></label>
+    <label>Arquivo MP3<input name="audio" type="file" accept="audio/*"></label>
+  </div>
+  <label>Snippet (prévia 15-30s)<input name="snippet" type="file" accept="audio/*"></label>
+  <label>Letra<textarea name="lyrics"></textarea></label>
+  <label>Créditos<textarea name="credits" placeholder="Produção, mixagem..."></textarea></label>
+  <label>Link Spotify<input name="spotify" type="url"></label>
+  <label>Link YouTube<input name="youtube" type="url"></label>
+  <label>Link Apple Music<input name="apple" type="url"></label>
+  <button class="primary" type="submit">Adicionar música</button>
+</form>
+</div>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script>
+requireLogin();
+(async () => {
+  const albums = await api('/api/albums');
+  const sel = document.querySelector('[name=album_id]');
+  albums.forEach(a => { const o=document.createElement('option'); o.value=a.id; o.textContent=a.title; sel.appendChild(o); });
+})();
+document.getElementById('f').onsubmit = async (e) => {
+  e.preventDefault();
+  const r = await apiForm('/api/songs', e.target);
+  if (r && r.id) { msg('Música adicionada ✓'); e.target.reset(); }
+  else msg('Erro ao adicionar', true);
+};
+</script></body></html>
